@@ -1,14 +1,15 @@
 import React, { ChangeEvent, useState } from "react";
 import axios from "axios";
-import { FormControlLabel, RadioGroup, Radio, TextField, InputLabel, Select, MenuItem, Button } from "@material-ui/core";
+import { FormControlLabel, RadioGroup, Radio, TextField, InputLabel, Select, MenuItem, Button, Typography } from "@material-ui/core";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from "react-leaflet";
 import L, { LatLng } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import Tag, { isTag } from "types/Tag";
 import { Shop } from "types/Shop";
+import Url from "components/atom/Url";
+import Tel from "components/atom/Tel";
 
 import "App.css";
-
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
@@ -44,7 +45,8 @@ const HomePage: React.VFC = () => {
 
   const getShops = async () => {
     // TODO distance が変わった時のみ、APIアクセス
-    const res = await axios.get(process.env.REACT_APP_API + `?lat=${currentPosition.lat}&lng=${currentPosition.lng}&distance=${distance}`)
+    const url = process.env.REACT_APP_API + `?lat=${currentPosition.lat}&lng=${currentPosition.lng}&distance=${distance}`;
+    const res = await axios.get(url);
     let shopsData: Shop[] = res.data;
     if (isEspecial) {
       shopsData = shopsData.filter((shop) => shop.especial);
@@ -71,7 +73,15 @@ const HomePage: React.VFC = () => {
         </Marker>
         {shops.map((shop, index) => (
           <Marker key={index} position={[shop.lat, shop.lng]}>
-            <Popup>{shop.title}</Popup>
+            <Popup>
+              <Typography variant="h5" component="div">{shop.title}</Typography>
+              <Typography variant="caption" color="textSecondary">{shop.address}</Typography>
+              <Typography variant="body2">
+                {shop.especial ? '専用のみ' : '共通・専用'}
+              </Typography>
+              <Tel tel={shop.tel} />
+              <Url url={shop.url} />
+            </Popup>
           </Marker>
         ))}
       </>

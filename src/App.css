@@ -72,3 +72,7 @@
 #input-distance {
   width: 100px;
 }
+
+.leaflet-popup-content p {
+  margin: 10px 0;
+}
