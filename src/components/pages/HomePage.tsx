@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useState } from "react";
-import { FormControlLabel, RadioGroup, Radio, TextField, InputLabel, Select, MenuItem } from "@material-ui/core";
+import axios from "axios";
+import { FormControlLabel, RadioGroup, Radio, TextField, InputLabel, Select, MenuItem, Button } from "@material-ui/core";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from "react-leaflet";
 import L, { LatLng } from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -32,7 +33,7 @@ const defaultShop: Shop[] = [{
 
 const HomePage: React.VFC = () => {
   // デフォルトは新八柱駅
-  let position = new LatLng(35.791714531276135, 139.93828231114674);
+  const [currentPosition, setCurrentPosition] = useState(new LatLng(35.791714531276135, 139.93828231114674))
   const [shops, setShops] = useState(defaultShop);
   const [distance, setDistance] = React.useState(500);
   const [isEspecial, setIsEspecial] = React.useState(false);
@@ -54,8 +55,20 @@ const HomePage: React.VFC = () => {
     setIsEspecial(event.target.value == 'true');
   };
 
+  const getShops = async () => {
+    // TODO distance が変わった時のみ、APIアクセス
+    const res = await axios.get(process.env.REACT_APP_API + `?lat=${currentPosition.lat}&lng=${currentPosition.lng}&distance=${distance}`)
+    let shopsData: Shop[] = res.data;
+    if (isEspecial) {
+      shopsData = shopsData.filter((shop) => shop.especial);
+    }
+    if (tag !== Tag.none) {
+      shopsData = shopsData.filter((shop) => shop.tag == tag);
+    }
+    setShops(shopsData);
+  }
+
   function LocationMarker() {
-    const [currentPosition, setCurrentPosition] = useState(position)
     const map = useMap();
     map.locate()
     useMapEvents({
@@ -109,7 +122,6 @@ const HomePage: React.VFC = () => {
         </div>
         <RadioGroup
           className="input-container"
-          aria-label="isEspecial"
           name="radio-button-is-especial"
           value={isEspecial}
           onChange={handleChangeIsEspecial}
@@ -117,8 +129,11 @@ const HomePage: React.VFC = () => {
           <FormControlLabel value={false} control={<Radio />} label="共通・専用" />
           <FormControlLabel value={true} control={<Radio />} label="専用のみ" />
         </RadioGroup>
+        <div className="button-container">
+          <Button variant="contained" color="primary" onClick={getShops}>検索</Button>
+        </div>
       </div>
-      <MapContainer center={position} zoom={18}>
+      <MapContainer center={currentPosition} zoom={18}>
         <TileLayer
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
