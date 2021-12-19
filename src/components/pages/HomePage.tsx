@@ -16,25 +16,12 @@ let DefaultIcon = L.icon({
   iconUrl: icon,
   shadowUrl: iconShadow
 });
-
 L.Marker.prototype.options.icon = DefaultIcon;
-
-const defaultShop: Shop[] = [{
-  id: '269442',
-  title: 'マツモトキヨシ小金店',
-  tag: Tag.drugstore,
-  especial: true,
-  address: '〒270-0014 千葉県松戸市小金435-1',
-  tel: '047-309-6211',
-  url: '-',
-  lat: 35.8317934,
-  lng: 139.9313732,
-}];
 
 const HomePage: React.VFC = () => {
   // デフォルトは新八柱駅
   const [currentPosition, setCurrentPosition] = useState(new LatLng(35.791714531276135, 139.93828231114674))
-  const [shops, setShops] = useState(defaultShop);
+  const [shops, setShops] = useState([] as Shop[]);
   const [distance, setDistance] = React.useState(500);
   const [isEspecial, setIsEspecial] = React.useState(false);
   const [tag, setTag] = React.useState(Tag.none as Tag);
