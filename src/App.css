@@ -45,5 +45,26 @@
 
 .leaflet-container {
   width: 100vw;
-  height: 100vh;
+  height: calc(100vh - 84px);
+}
+
+.control-area {
+  display: flex;
+  height: 84px;
+}
+
+.input-container {
+  padding: 12px 24px;
+}
+
+.MuiInputLabel-root {
+  text-align: left;
+}
+
+.MuiFormGroup-root {
+  padding: 0 24px;
+}
+
+#input-distance {
+  width: 100px;
 }
