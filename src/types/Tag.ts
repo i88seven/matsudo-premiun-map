@@ -17,7 +17,7 @@ const Tag = {
 type Tag = typeof Tag[keyof typeof Tag];
 
 export function isTag(value: string): value is Tag {
-  return (Object.values(Tag) as String[]).includes(value);
+  return (Object.values(Tag) as string[]).includes(value);
 }
 
 export default Tag;

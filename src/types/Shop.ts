@@ -1,13 +1,13 @@
 import Tag from "types/Tag";
 
 export interface Shop {
-  id: String,
-  title: String,
+  id: string,
+  title: string,
   tag: Tag,
   especial: boolean,
-  address: String,
-  tel: String,
-  url: String,
+  address: string,
+  tel: string,
+  url: string,
   lat: number,
   lng: number,
 }
