@@ -23,8 +23,11 @@ let currentIcon = L.icon({
   shadowUrl: iconShadow,
   iconSize: [40, 55],
   shadowAnchor: [10, 12],
+  popupAnchor:  [0, -30],
 });
 L.Marker.prototype.options.icon = DefaultIcon;
+
+const distanceOptions = [100, 200, 300, 400, 500, 600, 800, 1000, 1200, 1500, 2000, 2500, 3000];
 
 const HomePage: React.VFC = () => {
   // デフォルトは新八柱駅
@@ -34,7 +37,11 @@ const HomePage: React.VFC = () => {
   const [isEspecial, setIsEspecial] = React.useState(false);
   const [tag, setTag] = React.useState(Tag.none as Tag);
 
-  const handleChangeDistance = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeDistance = (event: ChangeEvent<{
+    name?: string | undefined;
+    value: unknown;
+  }>) => {
+    if (isNaN(Number(event.target.value))) return;
     setDistance(Number(event.target.value));
   };
 
@@ -99,17 +106,17 @@ const HomePage: React.VFC = () => {
     <div className="App">
       <div className="control-area">
         <div className="input-container">
-          <TextField
+          <InputLabel id="distance-label">検索半径</InputLabel>
+          <Select
             id="input-distance"
-            label="検索半径(m)"
-            type="number"
+            labelId="distance-label"
             value={distance}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            variant="standard"
             onChange={handleChangeDistance}
-          />
+          >
+            {distanceOptions.map((distanceOption) => (
+              <MenuItem key={distanceOption} value={distanceOption}>{distanceOption}m</MenuItem>
+            ))}
+          </Select>
         </div>
         <div className="input-container">
           <InputLabel id="tag-label">業種</InputLabel>
