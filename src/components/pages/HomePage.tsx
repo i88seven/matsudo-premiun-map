@@ -12,10 +12,17 @@ import Tel from "components/atom/Tel";
 import "App.css";
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+import NowIcon from 'images/now.png'
 
 let DefaultIcon = L.icon({
   iconUrl: icon,
-  shadowUrl: iconShadow
+  shadowUrl: iconShadow,
+});
+let currentIcon = L.icon({
+  iconUrl: NowIcon,
+  shadowUrl: iconShadow,
+  iconSize: [40, 55],
+  shadowAnchor: [10, 12],
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
@@ -68,7 +75,7 @@ const HomePage: React.VFC = () => {
     })
     return currentPosition === null ? null : (
       <>
-        <Marker position={currentPosition}>
+        <Marker position={currentPosition} icon={currentIcon}>
           <Popup>現在地</Popup>
         </Marker>
         {shops.map((shop, index) => (
