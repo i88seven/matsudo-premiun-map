@@ -21,9 +21,10 @@ import DrugstoreIcon from 'images/drugstore.png'
 const generateIcon = (icon: string) => L.icon({
   iconUrl: icon,
   shadowUrl: iconShadow,
+  iconAnchor: [27, 57],
   iconSize: [35, 50],
-  shadowAnchor: [12, 12],
-  popupAnchor:  [0, -27],
+  shadowAnchor: [23, 47],
+  popupAnchor:  [-9, -56],
 });
 const currentIcon = generateIcon(NowIcon);
 const otherIcon = generateIcon(OtherIcon);
