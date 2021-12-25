@@ -10,22 +10,41 @@ import Url from "components/atom/Url";
 import Tel from "components/atom/Tel";
 
 import "App.css";
-import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import NowIcon from 'images/now.png'
+import OtherIcon from 'images/other.png'
+import ElectronicsIcon from 'images/electronics.png'
+import ConvenienceIcon from 'images/convenience.png'
+import RestaurantIcon from 'images/restaurant.png'
+import DrugstoreIcon from 'images/drugstore.png'
 
-let DefaultIcon = L.icon({
+const generateIcon = (icon: string) => L.icon({
   iconUrl: icon,
   shadowUrl: iconShadow,
+  iconSize: [35, 50],
+  shadowAnchor: [12, 12],
+  popupAnchor:  [0, -27],
 });
-let currentIcon = L.icon({
-  iconUrl: NowIcon,
-  shadowUrl: iconShadow,
-  iconSize: [40, 55],
-  shadowAnchor: [10, 12],
-  popupAnchor:  [0, -30],
-});
-L.Marker.prototype.options.icon = DefaultIcon;
+const currentIcon = generateIcon(NowIcon);
+const otherIcon = generateIcon(OtherIcon);
+const electronicsIcon = generateIcon(ElectronicsIcon);
+const convenienceIcon = generateIcon(ConvenienceIcon);
+const restaurantIcon = generateIcon(RestaurantIcon);
+const drugstoreIcon = generateIcon(DrugstoreIcon);
+const tagIcon = (tagName: string): L.Icon => {
+  switch (tagName) {
+    case '家電販売店':
+      return electronicsIcon;
+    case 'コンビニ':
+      return convenienceIcon;
+    case '飲食店':
+      return restaurantIcon;
+    case 'ドラッグストア・調剤薬局':
+      return drugstoreIcon;
+  }
+  return otherIcon;
+};
+L.Marker.prototype.options.icon = otherIcon;
 
 const distanceOptions = [100, 200, 300, 400, 500, 600, 800, 1000, 1200, 1500, 2000, 2500, 3000];
 
@@ -86,7 +105,7 @@ const HomePage: React.VFC = () => {
           <Popup>現在地</Popup>
         </Marker>
         {shops.map((shop, index) => (
-          <Marker key={index} position={[shop.lat, shop.lng]}>
+          <Marker key={index} position={[shop.lat, shop.lng]} icon={tagIcon(shop.tag)}>
             <Popup>
               <Typography variant="h5" component="div">{shop.title}</Typography>
               <Typography variant="caption" color="textSecondary">{shop.address}</Typography>
