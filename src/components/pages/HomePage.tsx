@@ -91,6 +91,7 @@ const HomePage: React.VFC = () => {
       shopsData = shopsData.filter((shop) => shop.tag === tag);
     }
     setShops(shopsData);
+    flyToCurrent();
   }
 
   function unifyShops() {
@@ -134,8 +135,10 @@ const HomePage: React.VFC = () => {
     useMapEvents({
       locationfound(e) {
         setCurrentPosition(e.latlng)
-        leafletMap.flyTo(e.latlng, leafletMap.getZoom())
-        setFetchedCurrent(true)
+        if (!fetchedCurrent) {
+          leafletMap.flyTo(e.latlng, leafletMap.getZoom())
+          setFetchedCurrent(true)
+        }
       },
     })
     const unifiedShops: (Shop | UnifiedShops)[] = unifyShops();
