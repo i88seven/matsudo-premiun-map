@@ -61,16 +61,16 @@ const leafletIcons: {[key in IconKey]?: L.Icon} = {};
   leafletIcons[key] = generateIcon(icons[key])
 })
 
-const tagIcon = (tagName: string): L.Icon => {
+const fetchIconKey = (tagName: string): IconKey => {
   const tagKey = getTagKey(tagName);
 
   function isIconKey(value: string): value is IconKey {
     return leafletIcons.hasOwnProperty(value);
   }
   if (isIconKey(tagKey)) {
-    return leafletIcons[tagKey as IconKey] ?? generateIcon(OtherIcon);
+    return tagKey;
   }
-  return generateIcon(OtherIcon);
+  return 'none';
 };
 L.Marker.prototype.options.icon = leafletIcons.other;
 
@@ -177,8 +177,13 @@ const HomePage: React.VFC = () => {
         </Marker>
         {unifiedShops.map((shop, index) => (
           isShop(shop)
-            ? <Marker key={index} position={[shop.lat, shop.lng]} icon={tagIcon(shop.tag)}>
+            ? <Marker key={index} position={[shop.lat, shop.lng]} icon={leafletIcons[fetchIconKey(shop.tag)]}>
                 <Popup>
+                  <img
+                      className="popup-icon"
+                      src={icons[fetchIconKey(shop.tag)]}
+                      alt={shop.tag}
+                    />
                   <Typography variant="h5" component="div">{shop.title}</Typography>
                   <Typography variant="caption" color="textSecondary">{shop.address}</Typography>
                   <Typography variant="body2">
@@ -195,6 +200,11 @@ const HomePage: React.VFC = () => {
                       {shop.shops.map((unifiedShop, listIndex) => (
                         <div key={listIndex}>
                           {listIndex > 0 ? <Divider /> : <></>}
+                          <img
+                            className="popup-icon"
+                            src={icons[fetchIconKey(unifiedShop.tag)]}
+                            alt={unifiedShop.tag}
+                          />
                           <Typography variant="h5" component="div">{unifiedShop.title}</Typography>
                           <Typography variant="caption" color="textSecondary">{unifiedShop.address}</Typography>
                           <Typography variant="body2">

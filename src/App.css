@@ -77,6 +77,11 @@
   width: 100px;
 }
 
+.leaflet-popup-content .popup-icon {
+  width: 45px;
+  height: 39px;
+}
+
 .leaflet-popup-content p {
   margin: 10px 0;
   line-break: anywhere;
@@ -87,5 +92,6 @@
 }
 
 .leaflet-popup-content .MuiDivider-root {
-  margin-bottom: 10px;
+  margin-top: 12px;
+  margin-bottom: 18px;
 }
