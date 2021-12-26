@@ -82,6 +82,10 @@
   height: 39px;
 }
 
+.leaflet-popup-content .popup-icon.now-icon {
+  transform: translateY(14px);
+}
+
 .leaflet-popup-content p {
   margin: 10px 0;
   line-break: anywhere;

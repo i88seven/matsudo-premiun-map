@@ -173,7 +173,12 @@ const HomePage: React.VFC = () => {
     return currentPosition === null ? null : (
       <>
         <Marker position={currentPosition} icon={leafletIcons.current}>
-          <Popup>現在地</Popup>
+          <Popup>
+            <Typography variant="h5" component="div">
+              現在地
+              <img className="popup-icon now-icon" src={icons.current} alt="現在地" />
+            </Typography>
+          </Popup>
         </Marker>
         {unifiedShops.map((shop, index) => (
           isShop(shop)
