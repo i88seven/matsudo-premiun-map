@@ -52,6 +52,8 @@ const distanceOptions = [100, 200, 300, 400, 500, 600, 800, 1000, 1200, 1500, 20
 const HomePage: React.VFC = () => {
   // デフォルトは新八柱駅
   const [currentPosition, setCurrentPosition] = useState(new LatLng(35.791714531276135, 139.93828231114674))
+  const [fetchedCurrent, setFetchedCurrent] = React.useState(false);
+  let leafletMap: L.Map;
   const [shops, setShops] = useState([] as Shop[]);
   const [distance, setDistance] = React.useState(500);
   const [isEspecial, setIsEspecial] = React.useState(false);
@@ -120,13 +122,20 @@ const HomePage: React.VFC = () => {
     }, [] as (Shop | UnifiedShops)[])
   }
 
+  function flyToCurrent() {
+    if (fetchedCurrent) {
+      leafletMap.flyTo(currentPosition, leafletMap.getZoom())
+    }
+  }
+
   function LocationMarker() {
-    const map = useMap();
-    map.locate()
+    leafletMap = useMap();
+    leafletMap.locate()
     useMapEvents({
       locationfound(e) {
         setCurrentPosition(e.latlng)
-        map.flyTo(e.latlng, map.getZoom())
+        leafletMap.flyTo(e.latlng, leafletMap.getZoom())
+        setFetchedCurrent(true)
       },
     })
     const unifiedShops: (Shop | UnifiedShops)[] = unifyShops();
@@ -213,6 +222,7 @@ const HomePage: React.VFC = () => {
         </RadioGroup>
         <div className="button-container">
           <Button variant="contained" color="primary" onClick={getShops}>検索</Button>
+          {fetchedCurrent ? <Button variant="contained" color="default" onClick={flyToCurrent}>現在地へ</Button> : <></>}
         </div>
       </div>
       <MapContainer center={currentPosition} zoom={18}>

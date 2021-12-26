@@ -43,6 +43,10 @@
   height: 100vh;
 }
 
+.MuiButton-root + .MuiButton-root {
+  margin-left: 12px;
+}
+
 .leaflet-container {
   width: 100vw;
   height: calc(100vh - 84px);
