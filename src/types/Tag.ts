@@ -20,4 +20,10 @@ export function isTag(value: string): value is Tag {
   return (Object.values(Tag) as string[]).includes(value);
 }
 
+export function getTagKey(TagName: string): keyof typeof Tag {
+  const foundTagEntry = Object.entries(Tag).find(([key, value]) => value === TagName);
+  if (foundTagEntry) return foundTagEntry[0] as keyof typeof Tag;
+  return 'none';
+}
+
 export default Tag;

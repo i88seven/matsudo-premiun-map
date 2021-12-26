@@ -4,7 +4,7 @@ import { FormControlLabel, RadioGroup, Radio, InputLabel, Select, MenuItem, Butt
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from "react-leaflet";
 import L, { LatLng } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import Tag, { isTag } from "types/Tag";
+import Tag, { getTagKey, isTag } from "types/Tag";
 import { isShop, isUnifiedShops, Shop, UnifiedShops } from "types/Shop";
 import Url from "components/atom/Url";
 import Tel from "components/atom/Tel";
@@ -35,26 +35,44 @@ const generateIcon = (icon: string) => L.icon({
   shadowAnchor: [18, 45],
   popupAnchor:  [-3, -41],
 });
-const currentIcon = generateIcon(NowIcon);
-const otherIcon = generateIcon(OtherIcon);
-const electronicsIcon = generateIcon(ElectronicsIcon);
-const convenienceIcon = generateIcon(ConvenienceIcon);
-const restaurantIcon = generateIcon(RestaurantIcon);
-const drugstoreIcon = generateIcon(DrugstoreIcon);
+type IconKey = 'current' | 'electronics' | 'barber' | 'glasses' | 'convenience'
+  | 'restaurant' | 'food' | 'clothing' | 'supermarket' | 'service' | 'drugstore'
+  | 'gas' | 'retail' | 'other' | 'many' | 'none';
+const icons: {[key in IconKey]: string} = {
+  current: NowIcon,
+  electronics: ElectronicsIcon,
+  barber: BarberIcon,
+  glasses: GlassesIcon,
+  convenience: ConvenienceIcon,
+  restaurant: RestaurantIcon,
+  food: FoodIcon,
+  clothing: ClothingIcon,
+  supermarket: SupermarketIcon,
+  service: ServiceIcon,
+  drugstore: DrugstoreIcon,
+  gas: GasIcon,
+  retail: RetailIcon,
+  other: OtherIcon,
+  many: ManyIcon,
+  none: OtherIcon,
+}
+const leafletIcons: {[key in IconKey]?: L.Icon} = {};
+(Object.keys(icons) as IconKey[]).forEach(key => {
+  leafletIcons[key] = generateIcon(icons[key])
+})
+
 const tagIcon = (tagName: string): L.Icon => {
-  switch (tagName) {
-    case '家電販売店':
-      return electronicsIcon;
-    case 'コンビニ':
-      return convenienceIcon;
-    case '飲食店':
-      return restaurantIcon;
-    case 'ドラッグストア・調剤薬局':
-      return drugstoreIcon;
+  const tagKey = getTagKey(tagName);
+
+  function isIconKey(value: string): value is IconKey {
+    return leafletIcons.hasOwnProperty(value);
   }
-  return otherIcon;
+  if (isIconKey(tagKey)) {
+    return leafletIcons[tagKey as IconKey] ?? generateIcon(OtherIcon);
+  }
+  return generateIcon(OtherIcon);
 };
-L.Marker.prototype.options.icon = otherIcon;
+L.Marker.prototype.options.icon = leafletIcons.other;
 
 const distanceOptions = [100, 200, 300, 400, 500, 600, 800, 1000, 1200, 1500, 2000, 2500, 3000];
 
@@ -154,7 +172,7 @@ const HomePage: React.VFC = () => {
     const unifiedShops: (Shop | UnifiedShops)[] = unifyShops();
     return currentPosition === null ? null : (
       <>
-        <Marker position={currentPosition} icon={currentIcon}>
+        <Marker position={currentPosition} icon={leafletIcons.current}>
           <Popup>現在地</Popup>
         </Marker>
         {unifiedShops.map((shop, index) => (
@@ -170,7 +188,7 @@ const HomePage: React.VFC = () => {
                   <Url url={shop.url} />
                 </Popup>
               </Marker>
-            : <Marker key={index} position={[shop.lat, shop.lng]} icon={otherIcon}>
+            : <Marker key={index} position={[shop.lat, shop.lng]} icon={leafletIcons.many}>
                 <Popup>
                   <Paper style={{maxHeight: 500, overflow: 'auto'}}>
                     <List>
