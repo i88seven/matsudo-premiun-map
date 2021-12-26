@@ -104,6 +104,7 @@ const HomePage: React.VFC = () => {
         samePositionShop.shops.push(current);
         return prev
       }
+      // すでに shop として登録されていたら、many を表示する UnifiedShops に変更して入れ直す
       if (isShop(samePositionShop)) {
         return prev.map(shop => {
           if (isShop(shop)) {
@@ -111,12 +112,12 @@ const HomePage: React.VFC = () => {
               return shop
             }
             return {
-              shops: [shop],
+              shops: [shop, current],
               lat: shop.lat,
               lng: shop.lng,
             };
           }
-          return shop
+          return shop // UnifiedShops
         });
       }
       return prev
