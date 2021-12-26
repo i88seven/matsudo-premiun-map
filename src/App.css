@@ -75,4 +75,13 @@
 
 .leaflet-popup-content p {
   margin: 10px 0;
+  line-break: anywhere;
+}
+
+.leaflet-popup-content .MuiPaper-elevation1 {
+  box-shadow: none;
+}
+
+.leaflet-popup-content .MuiDivider-root {
+  margin-bottom: 10px;
 }

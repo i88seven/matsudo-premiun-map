@@ -11,3 +11,17 @@ export interface Shop {
   lat: number,
   lng: number,
 }
+
+export interface UnifiedShops {
+  shops: Shop[],
+  lat: number,
+  lng: number,
+}
+
+export function isShop(value: Shop | UnifiedShops): value is Shop {
+  return value.hasOwnProperty('title');
+}
+
+export function isUnifiedShops(value: Shop | UnifiedShops): value is UnifiedShops {
+  return !value.hasOwnProperty('title');
+}

@@ -1,11 +1,11 @@
 import React, { ChangeEvent, useState } from "react";
 import axios from "axios";
-import { FormControlLabel, RadioGroup, Radio, TextField, InputLabel, Select, MenuItem, Button, Typography } from "@material-ui/core";
+import { FormControlLabel, RadioGroup, Radio, InputLabel, Select, MenuItem, Button, Typography, Divider, List, Paper } from "@material-ui/core";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from "react-leaflet";
 import L, { LatLng } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import Tag, { isTag } from "types/Tag";
-import { Shop } from "types/Shop";
+import { isShop, isUnifiedShops, Shop, UnifiedShops } from "types/Shop";
 import Url from "components/atom/Url";
 import Tel from "components/atom/Tel";
 
@@ -74,7 +74,7 @@ const HomePage: React.VFC = () => {
   };
 
   const handleChangeIsEspecial = (event: ChangeEvent<HTMLInputElement>) => {
-    setIsEspecial(event.target.value == 'true');
+    setIsEspecial(event.target.value === 'true');
   };
 
   const getShops = async () => {
@@ -86,9 +86,38 @@ const HomePage: React.VFC = () => {
       shopsData = shopsData.filter((shop) => shop.especial);
     }
     if (tag !== Tag.none) {
-      shopsData = shopsData.filter((shop) => shop.tag == tag);
+      shopsData = shopsData.filter((shop) => shop.tag === tag);
     }
     setShops(shopsData);
+  }
+
+  function unifyShops() {
+    return shops.reduce((prev, current): (Shop | UnifiedShops)[] => {
+      const samePositionShop = prev.find(shop => shop.lat === current.lat && shop.lng === current.lng)
+      if (!samePositionShop) {
+        return [...prev, current]
+      }
+      if (isUnifiedShops(samePositionShop)) {
+        samePositionShop.shops.push(current);
+        return prev
+      }
+      if (isShop(samePositionShop)) {
+        return prev.map(shop => {
+          if (isShop(shop)) {
+            if (shop.id !== samePositionShop.id) {
+              return shop
+            }
+            return {
+              shops: [shop],
+              lat: shop.lat,
+              lng: shop.lng,
+            };
+          }
+          return shop
+        });
+      }
+      return prev
+    }, [] as (Shop | UnifiedShops)[])
   }
 
   function LocationMarker() {
@@ -100,23 +129,45 @@ const HomePage: React.VFC = () => {
         map.flyTo(e.latlng, map.getZoom())
       },
     })
+    const unifiedShops: (Shop | UnifiedShops)[] = unifyShops();
     return currentPosition === null ? null : (
       <>
         <Marker position={currentPosition} icon={currentIcon}>
           <Popup>現在地</Popup>
         </Marker>
-        {shops.map((shop, index) => (
-          <Marker key={index} position={[shop.lat, shop.lng]} icon={tagIcon(shop.tag)}>
-            <Popup>
-              <Typography variant="h5" component="div">{shop.title}</Typography>
-              <Typography variant="caption" color="textSecondary">{shop.address}</Typography>
-              <Typography variant="body2">
-                {shop.especial ? '専用のみ' : '共通・専用'}
-              </Typography>
-              <Tel tel={shop.tel} />
-              <Url url={shop.url} />
-            </Popup>
-          </Marker>
+        {unifiedShops.map((shop, index) => (
+          isShop(shop)
+            ? <Marker key={index} position={[shop.lat, shop.lng]} icon={tagIcon(shop.tag)}>
+                <Popup>
+                  <Typography variant="h5" component="div">{shop.title}</Typography>
+                  <Typography variant="caption" color="textSecondary">{shop.address}</Typography>
+                  <Typography variant="body2">
+                    {shop.especial ? '専用のみ' : '共通・専用'}
+                  </Typography>
+                  <Tel tel={shop.tel} />
+                  <Url url={shop.url} />
+                </Popup>
+              </Marker>
+            : <Marker key={index} position={[shop.lat, shop.lng]} icon={otherIcon}>
+                <Popup>
+                  <Paper style={{maxHeight: 500, overflow: 'auto'}}>
+                    <List>
+                      {shop.shops.map((unifiedShop, listIndex) => (
+                        <div key={listIndex}>
+                          {listIndex > 0 ? <Divider /> : <></>}
+                          <Typography variant="h5" component="div">{unifiedShop.title}</Typography>
+                          <Typography variant="caption" color="textSecondary">{unifiedShop.address}</Typography>
+                          <Typography variant="body2">
+                            {unifiedShop.especial ? '専用のみ' : '共通・専用'}
+                          </Typography>
+                          <Tel tel={unifiedShop.tel} />
+                          <Url url={unifiedShop.url} />
+                        </div>
+                      ))}
+                    </List>
+                  </Paper>
+                </Popup>
+              </Marker>
         ))}
       </>
     )
