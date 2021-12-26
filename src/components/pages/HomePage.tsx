@@ -12,19 +12,28 @@ import Tel from "components/atom/Tel";
 import "App.css";
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import NowIcon from 'images/now.png'
-import OtherIcon from 'images/other.png'
 import ElectronicsIcon from 'images/electronics.png'
+import BarberIcon from 'images/barber.png'
+import GlassesIcon from 'images/glasses.png'
 import ConvenienceIcon from 'images/convenience.png'
 import RestaurantIcon from 'images/restaurant.png'
+import FoodIcon from 'images/food.png'
+import ClothingIcon from 'images/clothing.png'
+import SupermarketIcon from 'images/supermarket.png'
+import ServiceIcon from 'images/service.png'
 import DrugstoreIcon from 'images/drugstore.png'
+import GasIcon from 'images/gas.png'
+import RetailIcon from 'images/retail.png'
+import OtherIcon from 'images/other.png'
+import ManyIcon from 'images/many.png'
 
 const generateIcon = (icon: string) => L.icon({
   iconUrl: icon,
   shadowUrl: iconShadow,
-  iconAnchor: [27, 57],
-  iconSize: [35, 50],
-  shadowAnchor: [23, 47],
-  popupAnchor:  [-9, -56],
+  iconAnchor: [27, 42],
+  iconSize: [45, 39],
+  shadowAnchor: [18, 45],
+  popupAnchor:  [-3, -41],
 });
 const currentIcon = generateIcon(NowIcon);
 const otherIcon = generateIcon(OtherIcon);
