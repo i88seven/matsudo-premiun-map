@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Typography, Divider, List, Paper } from "@material-ui/core";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from "react-leaflet";
 import L, { LatLng } from "leaflet";
@@ -76,9 +77,12 @@ L.Marker.prototype.options.icon = leafletIcons.other;
 
 
 const HomePage: React.VFC = () => {
+  const isMiniWindowQuery = useMediaQuery('(max-width: 430px)');
+  const [isMiniWindow, setIsMiniWindow] = useState(true);
+
   // デフォルトは新八柱駅
   const [currentPosition, setCurrentPosition] = useState(new LatLng(35.791714531276135, 139.93828231114674))
-  const [fetchedCurrent, setFetchedCurrent] = React.useState(false);
+  const [fetchedCurrent, setFetchedCurrent] = useState(false);
   let leafletMap: L.Map;
   const [shops, setShops] = useState([] as Shop[]);
 
@@ -117,6 +121,10 @@ const HomePage: React.VFC = () => {
       leafletMap.flyTo(currentPosition, leafletMap.getZoom())
     }
   }
+
+  React.useEffect(() => {
+    setIsMiniWindow(isMiniWindowQuery);
+  }, [isMiniWindowQuery]);
 
   function LocationMarker() {
     leafletMap = useMap();
@@ -191,13 +199,16 @@ const HomePage: React.VFC = () => {
 
   return (
     <div className="App">
-      <ControlArea
-        currentPosition={currentPosition}
-        fetchedCurrent={fetchedCurrent}
-        setShops={setShops}
-        flyToCurrent={flyToCurrent}
-      />
-      <MapContainer center={currentPosition} zoom={18}>
+      {isMiniWindow
+        ? <></>
+        : <ControlArea
+          currentPosition={currentPosition}
+          fetchedCurrent={fetchedCurrent}
+          setShops={setShops}
+          flyToCurrent={flyToCurrent}
+        />
+      }
+      <MapContainer style={{height: (isMiniWindow ? 'calc(100vh - 30px)' : 'calc(100vh - 84px)')}} center={currentPosition} zoom={18}>
         <TileLayer
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

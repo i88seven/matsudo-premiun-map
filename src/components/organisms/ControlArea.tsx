@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useState } from "react";
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import axios from "axios";
 import { FormControlLabel, RadioGroup, Radio, InputLabel, Select, MenuItem, Button, FormControl } from "@material-ui/core";
 import { LatLng } from "leaflet";
@@ -15,6 +16,7 @@ interface Props {
 }
 
 const ControlArea: React.VFC<Props> = (props) => {
+  const isLargeWindow = useMediaQuery('(min-width: 638px)');
   const [distance, setDistance] = useState(500);
   const [isEspecial, setIsEspecial] = useState(false);
   const [tag, setTag] = useState(Tag.none as Tag);
@@ -93,7 +95,7 @@ const ControlArea: React.VFC<Props> = (props) => {
       </RadioGroup>
       <div className="button-container">
         <Button variant="contained" color="primary" onClick={getShops}>検索</Button>
-        {props.fetchedCurrent ? <Button variant="contained" color="default" onClick={props.flyToCurrent}>現在地へ</Button> : <></>}
+        {props.fetchedCurrent && isLargeWindow ? <Button variant="contained" color="default" onClick={props.flyToCurrent}>現在地へ</Button> : <></>}
       </div>
     </div>
   );
