@@ -1,10 +1,9 @@
-import React, { ChangeEvent, useState } from "react";
-import axios from "axios";
-import { FormControlLabel, RadioGroup, Radio, InputLabel, Select, MenuItem, Button, Typography, Divider, List, Paper, FormControl } from "@material-ui/core";
+import React, { useState } from "react";
+import { Typography, Divider, List, Paper } from "@material-ui/core";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from "react-leaflet";
 import L, { LatLng } from "leaflet";
 import "leaflet/dist/leaflet.css";
-import Tag, { getTagKey, isTag } from "types/Tag";
+import { getTagKey } from "types/Tag";
 import { isShop, isUnifiedShops, Shop, UnifiedShops } from "types/Shop";
 import Url from "components/atom/Url";
 import Tel from "components/atom/Tel";
@@ -26,6 +25,7 @@ import GasIcon from 'images/gas.png'
 import RetailIcon from 'images/retail.png'
 import OtherIcon from 'images/other.png'
 import ManyIcon from 'images/many.png'
+import ControlArea from "components/organisms/ControlArea";
 
 const generateIcon = (icon: string) => L.icon({
   iconUrl: icon,
@@ -74,7 +74,6 @@ const fetchIconKey = (tagName: string): IconKey => {
 };
 L.Marker.prototype.options.icon = leafletIcons.other;
 
-const distanceOptions = [100, 200, 300, 400, 500, 600, 800, 1000, 1200, 1500, 2000, 2500, 3000];
 
 const HomePage: React.VFC = () => {
   // デフォルトは新八柱駅
@@ -82,44 +81,6 @@ const HomePage: React.VFC = () => {
   const [fetchedCurrent, setFetchedCurrent] = React.useState(false);
   let leafletMap: L.Map;
   const [shops, setShops] = useState([] as Shop[]);
-  const [distance, setDistance] = React.useState(500);
-  const [isEspecial, setIsEspecial] = React.useState(false);
-  const [tag, setTag] = React.useState(Tag.none as Tag);
-
-  const handleChangeDistance = (event: ChangeEvent<{
-    name?: string | undefined;
-    value: unknown;
-  }>) => {
-    if (isNaN(Number(event.target.value))) return;
-    setDistance(Number(event.target.value));
-  };
-
-  const handleChangeTag = (event: ChangeEvent<{
-    name?: string | undefined;
-    value: unknown;
-  }>) => {
-    if (typeof event.target.value != 'string' || !isTag(event.target.value)) return;
-    setTag(event.target.value);
-  };
-
-  const handleChangeIsEspecial = (event: ChangeEvent<HTMLInputElement>) => {
-    setIsEspecial(event.target.value === 'true');
-  };
-
-  const getShops = async () => {
-    // TODO distance が変わった時のみ、APIアクセス
-    const url = process.env.REACT_APP_API + `?lat=${currentPosition.lat}&lng=${currentPosition.lng}&distance=${distance}`;
-    const res = await axios.get(url);
-    let shopsData: Shop[] = res.data;
-    if (isEspecial) {
-      shopsData = shopsData.filter((shop) => shop.especial);
-    }
-    if (tag !== Tag.none) {
-      shopsData = shopsData.filter((shop) => shop.tag === tag);
-    }
-    setShops(shopsData);
-    flyToCurrent();
-  }
 
   function unifyShops() {
     return shops.reduce((prev, current): (Shop | UnifiedShops)[] => {
@@ -230,47 +191,12 @@ const HomePage: React.VFC = () => {
 
   return (
     <div className="App">
-      <div className="control-area">
-        <FormControl component="div" className="input-container" style={{width: '120px'}}>
-          <InputLabel id="distance-label">検索半径</InputLabel>
-          <Select
-            id="input-distance"
-            labelId="distance-label"
-            value={distance}
-            onChange={handleChangeDistance}
-          >
-            {distanceOptions.map((distanceOption) => (
-              <MenuItem key={distanceOption} value={distanceOption}>{distanceOption}m</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl component="div" className="input-container" style={{width: '160px'}}>
-          <InputLabel id="tag-label">業種</InputLabel>
-          <Select
-            labelId="tag-label"
-            value={tag}
-            label="業種"
-            onChange={handleChangeTag}
-          >
-            {Object.entries(Tag).map(([key, name]) => (
-              <MenuItem key={key} value={name}>{name}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <RadioGroup
-          className="input-container"
-          name="radio-button-is-especial"
-          value={isEspecial}
-          onChange={handleChangeIsEspecial}
-        >
-          <FormControlLabel value={false} control={<Radio />} label="共通・専用" />
-          <FormControlLabel value={true} control={<Radio />} label="専用のみ" />
-        </RadioGroup>
-        <div className="button-container">
-          <Button variant="contained" color="primary" onClick={getShops}>検索</Button>
-          {fetchedCurrent ? <Button variant="contained" color="default" onClick={flyToCurrent}>現在地へ</Button> : <></>}
-        </div>
-      </div>
+      <ControlArea
+        currentPosition={currentPosition}
+        fetchedCurrent={fetchedCurrent}
+        setShops={setShops}
+        flyToCurrent={flyToCurrent}
+      />
       <MapContainer center={currentPosition} zoom={18}>
         <TileLayer
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
