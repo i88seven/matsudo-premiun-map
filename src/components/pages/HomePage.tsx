@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState } from "react";
 import axios from "axios";
-import { FormControlLabel, RadioGroup, Radio, InputLabel, Select, MenuItem, Button, Typography, Divider, List, Paper } from "@material-ui/core";
+import { FormControlLabel, RadioGroup, Radio, InputLabel, Select, MenuItem, Button, Typography, Divider, List, Paper, FormControl } from "@material-ui/core";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from "react-leaflet";
 import L, { LatLng } from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -231,7 +231,7 @@ const HomePage: React.VFC = () => {
   return (
     <div className="App">
       <div className="control-area">
-        <div className="input-container">
+        <FormControl component="div" className="input-container" style={{width: '120px'}}>
           <InputLabel id="distance-label">検索半径</InputLabel>
           <Select
             id="input-distance"
@@ -243,8 +243,8 @@ const HomePage: React.VFC = () => {
               <MenuItem key={distanceOption} value={distanceOption}>{distanceOption}m</MenuItem>
             ))}
           </Select>
-        </div>
-        <div className="input-container">
+        </FormControl>
+        <FormControl component="div" className="input-container" style={{width: '160px'}}>
           <InputLabel id="tag-label">業種</InputLabel>
           <Select
             labelId="tag-label"
@@ -256,7 +256,7 @@ const HomePage: React.VFC = () => {
               <MenuItem key={key} value={name}>{name}</MenuItem>
             ))}
           </Select>
-        </div>
+        </FormControl>
         <RadioGroup
           className="input-container"
           name="radio-button-is-especial"

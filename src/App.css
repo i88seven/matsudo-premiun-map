@@ -55,26 +55,21 @@
 .control-area {
   display: flex;
   height: 84px;
+  padding: 8px 8px;
 }
 
-.input-container {
-  padding: 12px 24px;
-}
-
-.button-container {
-  padding: 24px;
+.control-area .input-container,
+.control-area .button-container {
+  padding: 0 8px;
 }
 
 .MuiInputLabel-root {
   text-align: left;
 }
 
-.MuiFormGroup-root {
-  padding: 0 24px;
-}
-
-#input-distance {
-  width: 100px;
+.input-container .MuiFormControlLabel-root {
+  margin-right: 0;
+  white-space: nowrap;
 }
 
 .leaflet-popup-content .popup-icon {
