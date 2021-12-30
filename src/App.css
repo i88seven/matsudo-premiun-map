@@ -94,3 +94,17 @@
   margin-top: 12px;
   margin-bottom: 18px;
 }
+
+.control-dialog {
+  height: 30px;
+  display: flex;
+  padding: 4px 8px;
+}
+
+#dialog-title {
+  padding-bottom: 4px;
+}
+
+#dialog-description .input-container {
+  margin: 12px 0;
+}

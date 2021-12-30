@@ -27,6 +27,7 @@ import RetailIcon from 'images/retail.png'
 import OtherIcon from 'images/other.png'
 import ManyIcon from 'images/many.png'
 import ControlArea from "components/organisms/ControlArea";
+import ControlDialog from "components/organisms/ControlDialog";
 
 const generateIcon = (icon: string) => L.icon({
   iconUrl: icon,
@@ -200,7 +201,12 @@ const HomePage: React.VFC = () => {
   return (
     <div className="App">
       {isMiniWindow
-        ? <></>
+        ? <ControlDialog
+          currentPosition={currentPosition}
+          fetchedCurrent={fetchedCurrent}
+          setShops={setShops}
+          flyToCurrent={flyToCurrent}
+        />
         : <ControlArea
           currentPosition={currentPosition}
           fetchedCurrent={fetchedCurrent}
@@ -208,7 +214,11 @@ const HomePage: React.VFC = () => {
           flyToCurrent={flyToCurrent}
         />
       }
-      <MapContainer style={{height: (isMiniWindow ? 'calc(100vh - 30px)' : 'calc(100vh - 84px)')}} center={currentPosition} zoom={18}>
+      <MapContainer
+        style={{height: (isMiniWindow ? 'calc(100vh - 38px)' : 'calc(100vh - 84px)')}}
+        center={currentPosition}
+        zoom={18}
+      >
         <TileLayer
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
