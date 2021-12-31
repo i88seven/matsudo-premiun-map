@@ -132,3 +132,7 @@
 #dialog-description .input-container {
   margin: 1.2rem 0;
 }
+
+.leaflet-popup {
+  padding-bottom: 46px;
+}

@@ -35,7 +35,7 @@ const generateIcon = (icon: string) => L.icon({
   iconAnchor: [27, 42],
   iconSize: [45, 39],
   shadowAnchor: [18, 45],
-  popupAnchor:  [-3, -41],
+  popupAnchor:  [-3, 6],
 });
 type IconKey = 'current' | 'electronics' | 'barber' | 'glasses' | 'convenience'
   | 'restaurant' | 'food' | 'clothing' | 'supermarket' | 'service' | 'drugstore'
@@ -143,7 +143,7 @@ const HomePage: React.VFC = () => {
     return currentPosition === null ? null : (
       <>
         <Marker position={currentPosition} icon={leafletIcons.current}>
-          <Popup>
+          <Popup autoClose={false}>
             <Typography variant="h5" component="div">
               現在地
               <img className="popup-icon now-icon" src={icons.current} alt="現在地" />
@@ -153,7 +153,7 @@ const HomePage: React.VFC = () => {
         {unifiedShops.map((shop, index) => (
           isShop(shop)
             ? <Marker key={index} position={[shop.lat, shop.lng]} icon={leafletIcons[fetchIconKey(shop.tag)]}>
-                <Popup>
+                <Popup autoClose={false}>
                   <img
                       className="popup-icon"
                       src={icons[fetchIconKey(shop.tag)]}
@@ -169,7 +169,7 @@ const HomePage: React.VFC = () => {
                 </Popup>
               </Marker>
             : <Marker key={index} position={[shop.lat, shop.lng]} icon={leafletIcons.many}>
-                <Popup>
+                <Popup autoClose={false}>
                   <Paper style={{maxHeight: 500, overflow: 'auto'}}>
                     <List>
                       {shop.shops.map((unifiedShop, listIndex) => (
