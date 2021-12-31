@@ -1,3 +1,15 @@
+@media screen and (max-width: 638px) {
+  html {
+    font-size: 8px;
+  }
+}
+
+@media screen and (max-width: 430px) {
+  html {
+    font-size: 6px;
+  }
+}
+
 .App {
   text-align: center;
 }
@@ -72,6 +84,10 @@
   white-space: nowrap;
 }
 
+.leaflet-popup-content {
+  margin: 1.2rem 1.8rem;
+}
+
 .leaflet-popup-content .popup-icon {
   width: 45px;
   height: 39px;
@@ -82,7 +98,7 @@
 }
 
 .leaflet-popup-content p {
-  margin: 10px 0;
+  margin: 1rem 0;
   line-break: anywhere;
 }
 
@@ -91,20 +107,28 @@
 }
 
 .leaflet-popup-content .MuiDivider-root {
-  margin-top: 12px;
-  margin-bottom: 18px;
+  margin-top: 1.2rem;
+  margin-bottom: 1.8rem;
 }
 
 .control-dialog {
   height: 30px;
   display: flex;
-  padding: 4px 8px;
+  padding: 0.4rem 0.8rem;
+}
+
+.MuiDialogContent-root .input-container .MuiFormControlLabel-root {
+  height: 20px;
+}
+
+.MuiList-padding {
+  padding: 0;
 }
 
 #dialog-title {
-  padding-bottom: 4px;
+  padding-bottom: 0.4rem;
 }
 
 #dialog-description .input-container {
-  margin: 12px 0;
+  margin: 1.2rem 0;
 }
